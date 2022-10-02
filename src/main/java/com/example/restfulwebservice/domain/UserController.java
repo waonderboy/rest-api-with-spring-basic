@@ -1,9 +1,7 @@
 package com.example.restfulwebservice.domain;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,4 +20,10 @@ public class UserController {
     public User retrieveUser(@PathVariable Integer id) {
         return userService.findById(id);
     }
+
+    @PostMapping("/users")
+    public User registerUser(@RequestBody User user) {
+        return userService.save(user);
+    }
+
 }
