@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -67,7 +68,7 @@ class UserControllerTest {
     @DisplayName("유저 등록")
     void registerUser() throws Exception{
         User user = new User("TestUser", LocalDateTime.now());
-
+        when(userService.save(user)).thenReturn(user);
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user)))
@@ -75,6 +76,20 @@ class UserControllerTest {
                 .andExpect(status().isCreated())
         ;
     }
+
+    @Test
+    @DisplayName("유저 삭제")
+    void deleteUser() throws Exception{
+        User user = new User("TestUser", LocalDateTime.now());
+
+        mockMvc.perform(delete("/users/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
+                .andDo(print())
+                .andExpect(status().isOk())
+        ;
+    }
+
 
 
 

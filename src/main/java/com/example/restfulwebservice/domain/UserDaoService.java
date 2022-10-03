@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDaoService {
@@ -37,6 +39,18 @@ public class UserDaoService {
             }
         }
         return null;
+    }
+
+    public boolean deleteById(int id) {
+        Optional<User> findUser = users.stream()
+                .filter(user -> user.getId().equals(id))
+                .findFirst();
+
+        if (!findUser.isEmpty()) {
+            return users.remove(findUser.get());
+        }
+
+        return false;
     }
 
 }
