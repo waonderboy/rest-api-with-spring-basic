@@ -90,6 +90,17 @@ class UserControllerTest {
         ;
     }
 
+    @Test
+    @DisplayName("선택된 유저 삭제 실패")
+    void deleteUserNotFound() throws Exception{
+        User user = new User("TestUser", LocalDateTime.now());
+
+        mockMvc.perform(delete("/users/{id}", 100)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+        ;
+    }
 
 
 
