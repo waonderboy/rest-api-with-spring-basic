@@ -23,6 +23,10 @@ public class UserController {
     @GetMapping("/users/{id}")
     public ResponseEntity<User> retrieveUser(@PathVariable Integer id) {
         User findUser = userService.findById(id);
+
+        if (findUser == null) {
+            throw new UserNotFoundException(String.format("ID[%s] not found", id));
+        }
         return ResponseEntity.ok(findUser);
     }
 
