@@ -1,11 +1,19 @@
 server:
   port: 8088
 
-
-#logging:
-#  level:
-#    org.springframework: debug
+logging:
+  level:
+    org.springframework: debug
 
 spring:
   messages:
     basename: messages
+
+  security:
+    user:
+      name: username
+      password: 1q2w
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
