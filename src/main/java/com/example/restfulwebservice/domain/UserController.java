@@ -1,6 +1,8 @@
 package com.example.restfulwebservice.domain;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -8,6 +10,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,13 +26,18 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> retrieveUser(@PathVariable Integer id) {
+    public ResponseEntity retrieveUser(@PathVariable Integer id) {
         User findUser = userService.findById(id);
 
         if (findUser == null) {
             throw new UserNotFoundException(String.format("ID[%s] not found", id));
         }
-        return ResponseEntity.ok(findUser);
+
+        // HATEOAS
+        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(methodOn(UserController.class).retrieveAllUsers());
+        EntityModel<User> resource = EntityModel.of(findUser).add(linkTo.withRel("all-users"));
+
+        return ResponseEntity.ok(resource);
     }
 
     @PostMapping("/users")
@@ -38,6 +47,8 @@ public class UserController {
                 .path("/{id}")
                 .buildAndExpand(savedUser.getId())
                 .toUri();
+
+
 
         return ResponseEntity.created(location).build();
     }
